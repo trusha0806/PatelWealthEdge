@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patel Wealth Edge - Risk Profiler</title>
+    <style>
+        :root {
+            --primary: #0a2540; /* Deep Navy */
+            --gold: #c5a059; /* Gold */
+            --light: #f4f7fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            color: var(--primary);
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .question-card {
+            display: none; /* Hidden by default */
+        }
+
+        .question-card.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .options label {
+            display: block;
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .options label:hover {
+            background: #eef2f6;
+            border-color: var(--primary);
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: var(--gold);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background-color: #061a2e;
+        }
+
+        .result-box {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background: #f8fff8;
+            border: 2px solid #4caf50;
+            border-radius: 10px;
+        }
+
+        .risk-label {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2e7d32;
+            margin: 10px 0;
+        }
+
+        .allocation-bar {
+            display: flex;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+            font-size: 12px;
+            color: white;
+            font-weight: bold;
+            line-height: 30px;
+        }
+
+        .equity { background: #d32f2f; width: 0%; text-align: center; }
+        .debt { background: #1976d2; width: 0%; text-align: center; }
+        .gold-asset { background: #fbc02d; width: 0%; text-align: center; color: black; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Patel Wealth Edge</h1>
+        <p>Investor Risk Profile Assessment</p>
+    </div>
+
+    <div class="question-card active" id="step0">
+        <h3>Client Details</h3>
+        <input type="text" id="clientName" placeholder="Enter Client Name" style="width: 90%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px;">
+        <button class="btn" onclick="nextStep(1)">Start Assessment</button>
+    </div>
+
+    <div class="question-card" id="step1">
+        <h3>1. What is your current Age Group?</h3>
+        <div class="options">
+            <label><input type="radio" name="q1" value="10"> 18 - 30 Years (Growth Phase)</label>
+            <label><input type="radio" name="q1" value="7"> 31 - 45 Years (Family Phase)</label>
+            <label><input type="radio" name="q1" value="5"> 46 - 60 Years (Pre-Retirement)</label>
+            <label><input type="radio" name="q1" value="2"> 60+ Years (Retired)</label>
+        </div>
+        <button class="btn" onclick="nextStep(2)">Next</button>
+    </div>
+
+    <div class="question-card" id="step2">
+        <h3>2. When do you need this money back?</h3>
+        <div class="options">
+            <label><input type="radio" name="q2" value="2"> Less than 3 Years</label>
+            <label><input type="radio" name="q2" value="5"> 3 to 5 Years</label>
+            <label><input type="radio" name="q2" value="8"> 5 to 10 Years</label>
+            <label><input type="radio" name="q2" value="10"> More than 10 Years</label>
+        </div>
+        <button class="btn" onclick="nextStep(3)">Next</button>
+    </div>
+
+    <div class="question-card" id="step3">
+        <h3>3. If your portfolio falls by 20% in a month due to a crash, what will you do?</h3>
+        <div class="options">
+            <label><input type="radio" name="q3" value="0"> Panic & Withdraw everything immediately.</label>
+            <label><input type="radio" name="q3" value="5"> Wait patiently for recovery.</label>
+            <label><input type="radio" name="q3" value="10"> Invest more money to buy at low prices.</label>
+        </div>
+        <button class="btn" onclick="nextStep(4)">Next</button>
+    </div>
+
+    <div class="question-card" id="step4">
+        <h3>4. What is your primary goal for this investment?</h3>
+        <div class="options">
+            <label><input type="radio" name="q4" value="2"> Safety of Principal (I cannot lose money).</label>
+            <label><input type="radio" name="q4" value="6"> Regular Income + Some Growth.</label>
+            <label><input type="radio" name="q4" value="10"> Maximum Wealth Creation (I can take risks).</label>
+        </div>
+        <button class="btn" onclick="calculateRisk()">Show My Profile</button>
+    </div>
+
+    <div class="result-box" id="result">
+        <h2>Risk Profile Report</h2>
+        <p>Client: <span id="displayClient" style="font-weight: bold;"></span></p>
+        <div class="risk-label" id="riskType">MODERATE</div>
+        <p id="riskDesc">You prefer a balance of safety and growth.</p>
+        
+        <p><strong>Recommended Asset Allocation:</strong></p>
+        <div class="allocation-bar">
+            <div class="equity" id="equityBar"></div>
+            <div class="debt" id="debtBar"></div>
+            <div class="gold-asset" id="goldBar"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-top: 5px;">
+            <span>🔴 Equity (High Growth)</span>
+            <span>🔵 Debt (Safety)</span>
+            <span>🟡 Gold (Hedge)</span>
+        </div>
+
+        <button class="btn" onclick="location.reload()">Assess New Client</button>
+    </div>
+
+</div>
+
+<script>
+    let totalScore = 0;
+
+    function nextStep(step) {
+        // Validation for Step 0 (Name)
+        if(step === 1 && document.getElementById('clientName').value === "") {
+            alert("Please enter client name.");
+            return;
+        }
+
+        // Hide all cards
+        document.querySelectorAll('.question-card').forEach(el => el.classList.remove('active'));
+        
+        // Show next card
+        document.getElementById('step' + step).classList.add('active');
+    }
+
+    function calculateRisk() {
+        const q1 = parseInt(document.querySelector('input[name="q1"]:checked')?.value || 0);
+        const q2 = parseInt(document.querySelector('input[name="q2"]:checked')?.value || 0);
+        const q3 = parseInt(document.querySelector('input[name="q3"]:checked')?.value || 0);
+        const q4 = parseInt(document.querySelector('input[name="q4"]:checked')?.value || 0);
+
+        if (!q1 || !q2 || !q3 || !q4) {
+            alert("Please answer all questions.");
+            return;
+        }
+
+        totalScore = q1 + q2 + q3 + q4;
+        showResult(totalScore);
+    }
+
+    function showResult(score) {
+        document.querySelectorAll('.question-card').forEach(el => el.classList.remove('active'));
+        document.getElementById('result').style.display = 'block';
+        document.getElementById('displayClient').innerText = document.getElementById('clientName').value;
+
+        let type = "";
+        let desc = "";
+        let eq = 0, dt = 0, gd = 0;
+
+        // Logic for Risk Profile
+        if (score < 15) {
+            type = "CONSERVATIVE (Safe Player)";
+            desc = "You prioritize safety over returns. Suggested: Liquid Funds or Conservative Hybrid Funds.";
+            document.getElementById('riskType').style.color = "#1976d2"; // Blue
+            eq = 20; dt = 70; gd = 10;
+        } else if (score >= 15 && score < 30) {
+            type = "MODERATE (Balanced)";
+            desc = "You want growth but with some stability. Suggested: Flexicap or Balanced Advantage Funds.";
+            document.getElementById('riskType').style.color = "#fbc02d"; // Goldish
+            eq = 50; dt = 40; gd = 10;
+        } else {
+            type = "AGGRESSIVE (Wealth Builder)";
+            desc = "You are ready for volatility to create massive wealth. Suggested: Midcap, Smallcap & Multi-cap Funds.";
+            document.getElementById('riskType').style.color = "#d32f2f"; // Red
+            eq = 80; dt = 10; gd = 10;
+        }
+
+        document.getElementById('riskType').innerText = type;
+        document.getElementById('riskDesc').innerText = desc;
+
+        // Update Bar
+        document.getElementById('equityBar').style.width = eq + "%";
+        document.getElementById('equityBar').innerText = eq + "%";
+        
+        document.getElementById('debtBar').style.width = dt + "%";
+        document.getElementById('debtBar').innerText = dt + "%";
+        
+        document.getElementById('goldBar').style.width = gd + "%";
+        document.getElementById('goldBar').innerText = gd + "%";
+    }
+</script>
+
+</body>
+</html>
